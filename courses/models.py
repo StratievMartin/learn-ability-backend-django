@@ -10,7 +10,7 @@ class Course(models.Model):
     # students
     # keywords
     # comments
-    # created = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title + ", " + self.description
@@ -24,7 +24,7 @@ class Course(models.Model):
 #     # students
 #     # keywords
 #     # comments
-#     # created = models.DateTimeField(auto_now_add=True)
+#     # created_at = models.DateTimeField(auto_now_add=True)
 
 #     def __str__(self):
 #         return self.title + ", " + self.description

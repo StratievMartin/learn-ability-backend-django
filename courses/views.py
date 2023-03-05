@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+# from .permissions import IsAdminOrReadOnly
 
 
 @api_view(["GET", "POST"])
@@ -14,6 +15,7 @@ def course_list(request, format=None):
     if request.method == "GET":
         courses = Course.objects.all()
         serializer = CourseSerializer(courses, many=True)
+        # permission_classes = [IsAdminOrReadOnly]
         return Response(serializer.data)
 
         # JSON
