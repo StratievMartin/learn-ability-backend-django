@@ -23,8 +23,8 @@ urlpatterns = [
     path("courses/", views.course_list),
     path("courses/<int:id>", views.course_detail),
     # lectures
-    path("courses/<int:course_id>/lectures/", views.get_course_lectures),
-    path("courses/<int:course_id>/lectures/<int:lecture_id>", views.lecture_details),
+    path("courses/<int:course_id>/lectures/", views.course_lectures),
+    path("courses/<int:course_id>/lectures/<int:lecture_id>", views.lecture_detail),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

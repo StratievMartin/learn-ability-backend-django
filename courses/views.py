@@ -10,11 +10,14 @@ from rest_framework import status
 
 @api_view(["GET", "POST"])
 def course_list(request, format=None):
-    # get all courses
-    # serialize them
-    # return json
     if request.method == "GET":
-        courses = Course.objects.all()
+        try:
+            courses = Course.objects.all()
+        except Course.DoesNotExist:
+            return Response(
+                {"error": "No existing courses"}, status=status.HTTP_404_NOT_FOUND
+            )
+
         serializer = CourseSerializer(courses, many=True)
         # permission_classes = [IsAdminOrReadOnly]
         return Response(serializer.data)
@@ -23,7 +26,6 @@ def course_list(request, format=None):
         serializer = CourseSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -33,7 +35,10 @@ def course_detail(request, id, format=None):
     try:
         course = Course.objects.get(pk=id)
     except Course.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {"error": f"Course with id: {id} doesn't exist"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
     if request.method == "GET":
         serializer = CourseSerializer(course)
@@ -51,41 +56,63 @@ def course_detail(request, id, format=None):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# lecture
-@api_view(["GET"])
-def get_course_lectures(request, course_id, format=None):
+@api_view(["GET", "POST"])
+def course_lectures(request, course_id, format=None):
     try:
-        lectures = Lecture.objects.filter(course_id=course_id)
-    except Lecture.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        course = Course.objects.get(pk=course_id)
+    except Course.DoesNotExist:
+        return Response(
+            {"error": "Course doesn't exist"}, status=status.HTTP_404_NOT_FOUND
+        )
 
     if request.method == "GET":
+        lectures = Lecture.objects.filter(course_id=course_id)
+        if not lectures:
+            return Response(
+                {"error": "No Lectures found for this course"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
         serializer = LectureSerializer(lectures, many=True)
         return Response(serializer.data)
 
-
-@api_view(["GET", "POST"])
-def lecture_details(request, course_id, lecture_id, format=None):
-    try:
-        course = Course.objects.get(id=course_id)
-        lecture = course.lectures.get(id=lecture_id)
-    except Course.DoesNotExist:
-        return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
-    except Lecture.DoesNotExist:
-        return Response(
-            {"error": "Lecture not found"}, status=status.HTTP_404_NOT_FOUND
-        )
-    #
-    print("lectur", lecture)
-    if request.method == "GET":
-        serializer = LectureSerializer(lecture)
-        # permission_classes = [IsAdminOrReadOnly]
-        return Response(serializer.data)
-
-    if request.method == "POST":
+    elif request.method == "POST":
         serializer = LectureSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(course=course)
+        return Response(serializer.data)
 
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(["GET", "PUT", "DELETE"])
+def lecture_detail(request, course_id, lecture_id, format=None):
+    try:
+        course = Course.objects.get(pk=course_id)
+        lecture = course.lectures.get(pk=lecture_id)
+    except Course.DoesNotExist:
+        return Response(
+            {"error": f"Course with id: {course_id} doesn't exist"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    except Lecture.DoesNotExist:
+        return Response(
+            {
+                "error": f"Lecture with id: {lecture_id} doesn't exist in course {course_id}"
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if request.method == "GET":
+        serializer = LectureSerializer(lecture)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = LectureSerializer(lecture, data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save(course=course)
+        return Response(serializer.data)
+
+    elif request.method == "DELETE":
+        lecture.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
