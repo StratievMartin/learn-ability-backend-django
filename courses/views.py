@@ -1,5 +1,5 @@
-from .models import Course, Lecture
-from .serializers import CourseSerializer, LectureSerializer
+from .models import Course, Lecture, Keyword
+from .serializers import CourseSerializer, LectureSerializer, KeywordSerializer
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,7 +22,7 @@ def course_list(request, format=None):
         # permission_classes = [IsAdminOrReadOnly]
         return Response(serializer.data)
 
-    if request.method == "POST":
+    elif request.method == "POST":
         serializer = CourseSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -116,3 +116,60 @@ def lecture_detail(request, course_id, lecture_id, format=None):
     elif request.method == "DELETE":
         lecture.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET", "POST", "PUT", "DELETE"])
+def keyword_list(request, format=None):
+    if request.method == "GET":
+        try:
+            keywords = Keyword.objects.all()
+        except Keyword.DoesNotExist:
+            return Response(
+                {"error": "No existing keywords"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = KeywordSerializer(keywords, many=True)
+        # permission_classes = [IsAdminOrReadOnly]
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = KeywordSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# @api_view(["GET", "PUT", "DELETE"])
+# def keyword_detail(request, keyword_id, course_id, format=None):
+#     print(keyword_id, course_id)
+#     try:
+#         course = Course.objects.get(pk=course_id)
+#         keyword = course.lectures.get(id=keyword_id)
+#     except Course.DoesNotExist:
+#         return Response(
+#             {"error": f"Course with id: {course_id} doesn't exist"},
+#             status=status.HTTP_404_NOT_FOUND,
+#         )
+#     except Keyword.DoesNotExist:
+#         return Response(
+#             {
+#                 "error": f"Keyword with id: {keyword_id} doesn't exist in course {course_id}"
+#             },
+#             status=status.HTTP_404_NOT_FOUND,
+#         )
+
+#     if request.method == "GET":
+#         serializer = KeywordSerializer(keyword)
+#         return Response(serializer.data)
+
+#     elif request.method == "PUT":
+#         serializer = KeywordSerializer(keyword, data=request.data)
+#         if not serializer.is_valid():
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         serializer.save(keyword=keyword)
+#         return Response(serializer.data)
+
+#     elif request.method == "DELETE":
+#         keyword.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)

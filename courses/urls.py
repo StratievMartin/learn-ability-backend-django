@@ -19,11 +19,14 @@ from courses import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("courses/", views.course_list),
+    path("admin", admin.site.urls),
+    path("keywords", views.keyword_list),
+    # path("keywords/<int:id>", views.keyword_detail),
+    # path("courses/<int:id>/keywords/<int:id>", views.keyword_detail),
+    path("courses", views.course_list),
     path("courses/<int:id>", views.course_detail),
     # lectures
-    path("courses/<int:course_id>/lectures/", views.course_lectures),
+    path("courses/<int:course_id>/lectures", views.course_lectures),
     path("courses/<int:course_id>/lectures/<int:lecture_id>", views.lecture_detail),
 ]
 

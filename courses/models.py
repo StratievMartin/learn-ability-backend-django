@@ -7,7 +7,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     # lecturer
     # students
-    # keywords
+    keywords = models.ManyToManyField("Keyword", related_name="courses")
     # comments
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -29,3 +29,10 @@ class Lecture(models.Model):
 
     def __str__(self):
         return self.title + ", " + self.description
+
+
+class Keyword(models.Model):
+    keyword = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.keyword

@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Course
-from .models import Lecture
+from .models import Course, Lecture, Keyword
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -14,7 +13,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "lectures",
             # "lecturer",
             # "students",
-            # "keywords",
+            "keywords",
             # "comments",
             "created_at",
         ]
@@ -26,3 +25,9 @@ class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
         fields = ["id", "course_id", "title", "description", "video_url", "created_at"]
+
+
+class KeywordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Keyword
+        fields = ["id", "keyword"]
