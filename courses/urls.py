@@ -18,11 +18,17 @@ from django.urls import path
 from courses import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
+# create a route that:
+# [] will get all courses depending on the keyword or multiple ones
+# [] pushes keywords to the courses arr
+
 urlpatterns = [
     path("admin", admin.site.urls),
     path("keywords", views.keyword_list),
     # path("keywords/<int:id>", views.keyword_detail),
-    # path("courses/<int:id>/keywords/<int:id>", views.keyword_detail),
+    
+    # pushes keywords to the courses arr
+    # path("courses/<int:course_id>/keyword/<int:keyword_id>", views.keyword_detail),
     path("courses", views.course_list),
     path("courses/<int:id>", views.course_detail),
     # lectures

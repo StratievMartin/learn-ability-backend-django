@@ -140,36 +140,36 @@ def keyword_list(request, format=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-# @api_view(["GET", "PUT", "DELETE"])
-# def keyword_detail(request, keyword_id, course_id, format=None):
-#     print(keyword_id, course_id)
-#     try:
-#         course = Course.objects.get(pk=course_id)
-#         keyword = course.lectures.get(id=keyword_id)
-#     except Course.DoesNotExist:
-#         return Response(
-#             {"error": f"Course with id: {course_id} doesn't exist"},
-#             status=status.HTTP_404_NOT_FOUND,
-#         )
-#     except Keyword.DoesNotExist:
-#         return Response(
-#             {
-#                 "error": f"Keyword with id: {keyword_id} doesn't exist in course {course_id}"
-#             },
-#             status=status.HTTP_404_NOT_FOUND,
-#         )
+@api_view(["GET", "PUT", "DELETE"])
+def keyword_detail(request, course_id, keyword_id, format=None):
+    print(keyword_id, course_id)
+    # try:
+    #     course = Course.objects.get(pk=course_id)
+    #     keyword = course.lectures.get(id=keyword_id)
+    # except Course.DoesNotExist:
+    #     return Response(
+    #         {"error": f"Course with id: {course_id} doesn't exist"},
+    #         status=status.HTTP_404_NOT_FOUND,
+    #     )
+    # except Keyword.DoesNotExist:
+    #     return Response(
+    #         {
+    #             "error": f"Keyword with id: {keyword_id} doesn't exist in course {course_id}"
+    #         },
+    #         status=status.HTTP_404_NOT_FOUND,
+    #     )
 
-#     if request.method == "GET":
-#         serializer = KeywordSerializer(keyword)
-#         return Response(serializer.data)
+    # if request.method == "GET":
+    #     serializer = KeywordSerializer(keyword)
+    #     return Response(serializer.data)
 
-#     elif request.method == "PUT":
-#         serializer = KeywordSerializer(keyword, data=request.data)
-#         if not serializer.is_valid():
-#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#         serializer.save(keyword=keyword)
-#         return Response(serializer.data)
+    # elif request.method == "PUT":
+    #     serializer = KeywordSerializer(keyword, data=request.data)
+    #     if not serializer.is_valid():
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     serializer.save(keyword=keyword)
+    #     return Response(serializer.data)
 
-#     elif request.method == "DELETE":
-#         keyword.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    # elif request.method == "DELETE":
+    #     keyword.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
