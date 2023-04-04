@@ -18,6 +18,7 @@ class Course(models.Model):
 class Lecture(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
+    content = models.TextField()
     video_url = models.URLField()
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name="lectures"
