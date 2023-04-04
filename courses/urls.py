@@ -21,19 +21,22 @@ from rest_framework.urlpatterns import format_suffix_patterns
 # create a route that:
 # [] will get all courses depending on the keyword or multiple ones
 # [] pushes keywords to the courses arr
-
+# route auth
 urlpatterns = [
     path("admin", admin.site.urls),
-    path("keywords", views.keyword_list),
-    # path("keywords/<int:id>", views.keyword_detail),
-    
-    # pushes keywords to the courses arr
-    # path("courses/<int:course_id>/keyword/<int:keyword_id>", views.keyword_detail),
+    # courses
     path("courses", views.course_list),
     path("courses/<int:id>", views.course_detail),
     # lectures
     path("courses/<int:course_id>/lectures", views.course_lectures),
     path("courses/<int:course_id>/lectures/<int:lecture_id>", views.lecture_detail),
+    # keywords
+    path("keywords", views.keyword_list),
+    path("keywords/del/<int:id>", views.keyword_delete),
+    path("keywords/<int:id>", views.keyword_delete),
+    # pushes keywords to the courses arr
+    path("courses/<int:course_id>/keyword/<int:keyword_id>", views.attach_keywords),
+    path("courses/search/", views.get_courses_by_keyword),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

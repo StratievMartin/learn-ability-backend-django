@@ -56,6 +56,7 @@ def course_detail(request, id, format=None):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+# lectures
 @api_view(["GET", "POST"])
 def course_lectures(request, course_id, format=None):
     try:
@@ -118,7 +119,8 @@ def lecture_detail(request, course_id, lecture_id, format=None):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(["GET", "POST", "PUT", "DELETE"])
+# keyword
+@api_view(["GET", "POST"])
 def keyword_list(request, format=None):
     if request.method == "GET":
         try:
@@ -140,36 +142,41 @@ def keyword_list(request, format=None):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(["GET", "PUT", "DELETE"])
-def keyword_detail(request, course_id, keyword_id, format=None):
-    print(keyword_id, course_id)
-    # try:
-    #     course = Course.objects.get(pk=course_id)
-    #     keyword = course.lectures.get(id=keyword_id)
-    # except Course.DoesNotExist:
-    #     return Response(
-    #         {"error": f"Course with id: {course_id} doesn't exist"},
-    #         status=status.HTTP_404_NOT_FOUND,
-    #     )
-    # except Keyword.DoesNotExist:
-    #     return Response(
-    #         {
-    #             "error": f"Keyword with id: {keyword_id} doesn't exist in course {course_id}"
-    #         },
-    #         status=status.HTTP_404_NOT_FOUND,
-    #     )
+@api_view(["DELETE"])
+def keyword_delete(request, id, format=None):
+    try:
+        keyword = Keyword.objects.get(id=id)
+    except Keyword.DoesNotExist:
+        return Response(
+            {
+                "error": f"Keyword with id: {keyword_id} doesn't exist in course {course_id}"
+            },
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    keyword.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # if request.method == "GET":
-    #     serializer = KeywordSerializer(keyword)
-    #     return Response(serializer.data)
 
-    # elif request.method == "PUT":
-    #     serializer = KeywordSerializer(keyword, data=request.data)
-    #     if not serializer.is_valid():
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #     serializer.save(keyword=keyword)
-    #     return Response(serializer.data)
+@api_view(["POST"])
+def attach_keywords(request, course_id, keyword_id, format=None):
+    try:
+        course = Course.objects.get(pk=course_id)
+        keyword = Keyword.objects.get(id=keyword_id)
+    except Course.DoesNotExist:
+        return Response(
+            {"error": f"Course with id: {course_id} doesn't exist"},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+    except Keyword.DoesNotExist:
+        return Response(
+            {"error": f"Keyword with id: {keyword_id} doesn't exist."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
-    # elif request.method == "DELETE":
-    #     keyword.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    course.keywords.add(keyword)
+    return Response(status=status.HTTP_201_CREATED)
+
+
+@api_view(["GET"])
+def get_courses_by_keyword(request, keyword_id, format=None):
+    print(keyword_id)
