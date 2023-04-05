@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
 ]
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5173", "http://127.0.0.1:5174"]
+CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5175", "http://127.0.0.1:5174"]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

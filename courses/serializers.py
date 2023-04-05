@@ -24,7 +24,15 @@ class CourseSerializer(serializers.ModelSerializer):
 class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
-        fields = ["id", "course_id", "title", "description", "video_url", "created_at"]
+        fields = [
+            "id",
+            "course_id",
+            "title",
+            "description",
+            "content",
+            "video_url",
+            "created_at",
+        ]
 
 
 class KeywordSerializer(serializers.ModelSerializer):
